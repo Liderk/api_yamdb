@@ -1,11 +1,12 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser
+    BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
 
 
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager ):
     def create_user(self, email, password=None, **kwargs):
         if not email:
             raise ValueError('Users must have an email address')
@@ -28,10 +29,11 @@ class UserManager(BaseUserManager):
         user.role = 'admin'
         user.is_admin = True
         user.save(using=self._db)
+        user.is_staff = True
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     USER_ROLES = (
         ('user', 'user'),
         ('moderator', 'moderator'),
@@ -48,9 +50,18 @@ class User(AbstractBaseUser):
     role = models.CharField(max_length=10, choices=USER_ROLES, default='user')
     objects = UserManager()
     USERNAME_FIELD = 'email'
+    is_superuser = models.BooleanField(default=0)
 
     def __str__(self):
         return self.email
+
+    def is_staff(self):
+        is_staff = models.BooleanField(
+            _('staff status'),
+            default=False,
+            help_text=_(
+                'Designates whether the user can log into this admin site.')
+        )
 
 
 class Categories(models.Model):
