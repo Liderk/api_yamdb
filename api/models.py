@@ -28,8 +28,9 @@ class UserManager(BaseUserManager ):
         )
         user.role = 'admin'
         user.is_admin = True
-        user.save(using=self._db)
         user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
         return user
 
 
@@ -50,7 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=10, choices=USER_ROLES, default='user')
     objects = UserManager()
     USERNAME_FIELD = 'email'
-    is_superuser = models.BooleanField(default=0)
+    is_superuser = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email

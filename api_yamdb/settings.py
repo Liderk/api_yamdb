@@ -137,7 +137,7 @@ REST_FRAMEWORK = {
         ],          
 }
 
-MANAGERS = ['p7chkn@yandex.ru', 'falljosef93@gmail.com']
+MANAGERS = ['vismoke@yandex.ru', 'vismoke@gmail.com']
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 
